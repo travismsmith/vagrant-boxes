@@ -1,0 +1,43 @@
+#cloud-config
+autoinstall: #https://ubuntu.com/server/docs/install/autoinstall-reference
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+    variant: ''
+  refresh-installer:
+    update: yes
+  early-commands:
+    - sudo systemctl stop ssh #https://github.com/burkeazbill/ubuntu-22-04-packer-fusion-workstation/blob/master/http/user-data
+    - apt-get update
+  storage:
+    layout:
+      name: direct
+  ssh:
+    install-server: yes
+  updates: security
+  user-data: #https://cloudinit.readthedocs.io/en/latest/topics/modules.html
+    growpart:
+      mode: auto
+      devices: ["/"]
+      ignore_growroot_disabled: false
+    package_update: true
+    package_upgrade: true
+    package_reboot_if_required: true
+    resize_rootfs: true
+    ssh_pwauth: true
+    users:
+      - name: ${user}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        groups: adm, cdrom, dip, lxd, pludev, sudo
+        lock_passwd: false
+        plain_text_passwd: ${password}
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - ${ssh_key}
+    timezone: US/Eastern
+  packages:
+    - build-essential
+%{ for package in packages ~}
+    - ${package}
+%{ endfor ~}
