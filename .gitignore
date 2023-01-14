@@ -9,3 +9,4 @@ crash.log
 
 .vagrant/
 output/
+tests/
