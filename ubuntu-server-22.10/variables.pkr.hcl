@@ -46,7 +46,7 @@ variable "name" {
 
 variable "output_directory" {
   type    = string
-  default = "Virtual Machines.localized"
+  default = "output"
 }
 
 variable "password" {

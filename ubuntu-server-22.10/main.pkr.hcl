@@ -1,3 +1,13 @@
+packer {
+  required_version = ">= 1.7.0"
+  required_plugins {
+    vmware = {
+      version = ">= 1.0.7"
+      source  = "github.com/hashicorp/vmware"
+    }
+  }
+}
+
 locals {
   content = {
     "/meta-data" = file("${path.root}/www/meta-data")
@@ -14,9 +24,9 @@ locals {
   date             = formatdate("YYYYMMDD", timestamp())
   full_version     = "${local.date}.${local.version}"
   manifest         = fileexists(local.manifest_name) ? jsondecode(file(local.manifest_name)) : { "builds" : [], "last_run_uuid" : "" }
-  manifest_name    = "${var.home_dir}/.packer.d/manifests/packer-manifest-ubuntu-${local.date}.json"
+  manifest_name    = "${var.output_directory}/packer-manifest-${var.name}-${local.date}.json"
   name             = "${var.name}_${local.full_version}"
-  output           = "${var.home_dir}/${var.output_directory}/${local.name}.vmwarevm"
+  output           = "${var.output_directory}/${local.name}.vmwarevm"
   shutdown_command = "sudo shutdown -P now"
   version          = length(local.versions) == 0 ? 0 : max(local.versions...) + 1
   versions         = [for build in local.manifest["builds"] : split(".", build.custom_data.version)[0] == local.date ? split(".", build.custom_data.version)[1] : -1]
@@ -80,6 +90,6 @@ build {
   post-processor "vagrant" {
     keep_input_artifact  = false
     vagrantfile_template = "./Vagrantfile"
-    output               = "output/${local.name}_arm64_{{.Provider}}.box"
+    output               = "${var.output_directory}/${local.name}_arm64_{{.Provider}}.box"
   }
 }
