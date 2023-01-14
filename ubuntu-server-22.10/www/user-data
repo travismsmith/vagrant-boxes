@@ -14,8 +14,9 @@ autoinstall: #https://ubuntu.com/server/docs/install/autoinstall-reference
     layout:
       name: direct
   ssh:
-    install-server: yes
-  updates: security
+    install-server: true
+    allow-pw: true
+  updates: all
   user-data: #https://cloudinit.readthedocs.io/en/latest/topics/modules.html
     growpart:
       mode: auto
@@ -25,7 +26,6 @@ autoinstall: #https://ubuntu.com/server/docs/install/autoinstall-reference
     package_upgrade: true
     package_reboot_if_required: true
     resize_rootfs: true
-    ssh_pwauth: true
     users:
       - name: ${user}
         sudo: ALL=(ALL) NOPASSWD:ALL
