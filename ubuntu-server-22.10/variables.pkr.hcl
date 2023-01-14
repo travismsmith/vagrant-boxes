@@ -41,7 +41,7 @@ variable "memory" {
 
 variable "name" {
   type    = string
-  default = "Vagrant Ubuntu 22.10"
+  default = "ubuntu-server-22.10"
 }
 
 variable "output_directory" {
@@ -61,7 +61,7 @@ variable "ssh_public_key" {
 
 variable "ssh_timeout" {
   type    = string
-  default = "15m"
+  default = "30m"
 }
 
 variable "user" {
